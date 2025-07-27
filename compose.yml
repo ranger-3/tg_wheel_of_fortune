@@ -1,0 +1,26 @@
+services:
+  bot:
+    build:
+      dockerfile: Dockerfile
+      context: ./bot
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - bot-logs:/app/logs
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    volumes:
+      - api-logs:/app/logs
+
+volumes:
+  bot-logs: {}
+  api-logs: {}

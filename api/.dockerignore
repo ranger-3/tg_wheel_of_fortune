@@ -1,0 +1,16 @@
+*
+
+!pyproject.toml
+!uv.lock
+
+!app.py
+!config.py
+!logging_config.py
+!constants.py
+!schemas.py
+!storage.py
+!utils.py
+!services/
+!static/
+
+**/__pycache__/

@@ -1,0 +1,15 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi>=0.116.1",
+  "filelock>=3.18.0",
+  "httpx>=0.28.1",
+  "init-data-py>=0.2.6",
+  "pydantic-settings>=2.10.1",
+  "rich>=14.1.0",
+  "uvicorn>=0.35.0",
+]

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Колесо фортуны</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #fff;
+      color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      padding: 2rem 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      margin: 0;
+    }
+
+    #spinBtn {
+      font-size: 1.2rem;
+      padding: 1rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, #ffd700, #ffa500);
+      color: #111;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #spinBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #result {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    code {
+      background: #eee;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>🎡 Готов прокрутить колесо?</h2>
+    <button id="spinBtn">Крутить</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    Telegram.WebApp.ready();
+
+    document.getElementById("spinBtn").onclick = async () => {
+      const userId = Telegram.WebApp.initDataUnsafe.user?.id;
+      const initData = Telegram.WebApp.initData;
+      const res = await fetch("/spin", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({user_id: userId, init_data: initData})
+      });
+
+      const data = await res.json();
+      const result = document.getElementById("result");
+
+      if (res.ok && data.can_spin === false) {
+        result.innerHTML = `
+          🔄 Вы уже крутили колесо!<br>
+          🎯 Скидка: <b>${data.sector}</b><br>
+          🎁 Промокод: <code>${data.promo_code}</code><br>
+          ⏳ Следующая попытка через: <b>${data.retry_after}</b>
+        `;
+      } else if (res.ok) {
+        result.innerHTML = `
+          🎉 Поздравляем!<br>
+          🎯 Скидка: <b>${data.sector}</b><br>
+          🎁 Промокод: <code>${data.promo_code}</code>
+        `;
+      }
+      else if (res.status === 403) {
+        result.innerHTML = `
+          <a href="https://t.me/asdfzxcvasf">👉 Подпишитесь на канал, чтобы крутить колесо</a>
+        `;
+      }
+      else {
+
+        result.innerHTML = `⛔ Ошибка: ${data.detail || "Что-то пошло не так"}`;
+      }
+    };
+  </script>
+</body>
+
+</html>
