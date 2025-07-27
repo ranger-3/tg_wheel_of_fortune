@@ -8,6 +8,16 @@ services:
     restart: unless-stopped
     volumes:
       - bot-logs:/app/logs
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./bot
+          target: /app
+          ignore:
+            - .venv/
+            - logs/
+        - action: rebuild
+          path: ./pyproject.toml
 
   api:
     build:
@@ -20,6 +30,16 @@ services:
     restart: unless-stopped
     volumes:
       - api-logs:/app/logs
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./api
+          target: /app
+          ignore:
+            - .venv/
+            - logs/
+        - action: rebuild
+          path: ./pyproject.toml
 
 volumes:
   bot-logs: {}
