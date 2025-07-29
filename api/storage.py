@@ -11,9 +11,10 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_data() -> dict[str, Any]:
-    if not DATA_FILE.exists():
+    try:
+        return json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    except FileNotFoundError:
         return {}
-    return json.loads(DATA_FILE.read_text(encoding="utf-8"))
 
 
 def save_data(data: dict[str, Any]) -> None:
