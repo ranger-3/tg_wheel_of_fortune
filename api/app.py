@@ -2,13 +2,15 @@ import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 
-from config import settings
-from constants import SECTORS, SPIN_INTERVAL
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+
+from config import settings
+from constants import SECTORS, SPIN_INTERVAL
 from logging_config import logger
 from schemas import SpinRequest, SpinResponse
+from services.store_api import create_promo_code
 from services.telegram import check_user_subscribed, send_promo_code, validate_init_data
 from storage import get_user_data, set_user_data
 from utils import format_timedelta, generate_promo_code
@@ -60,6 +62,7 @@ async def spin(req: SpinRequest):
             }
 
     label = secrets.choice(SECTORS)
+    discount = int(label.rstrip("%"))
     promo_code = generate_promo_code()
     username = init_data.user.username or "unknown"
 
@@ -67,6 +70,12 @@ async def spin(req: SpinRequest):
         f"@{username} (ID {user_id}) hit the wheel — "
         f"sector: {label}, promo code: {promo_code}"
     )
+
+    success = await create_promo_code(username, promo_code, discount)
+    if not success:
+        raise HTTPException(
+            status_code=502, detail="Failed to register promo code in store"
+        )
 
     new_user_data = {
         "last_spin": now.isoformat(),
