@@ -1,15 +1,15 @@
 import logging
-import os
 from logging.handlers import TimedRotatingFileHandler
+from pathlib import Path
 from typing import Final
 
 from rich.logging import RichHandler
 
 LOG_LEVEL: Final = logging.INFO
 LOG_FILE: Final = "api.log"
-LOG_DIR: Final = "logs"
+LOG_DIR: Final = Path("logs")
 
-os.makedirs(LOG_DIR, exist_ok=True)
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 logger = logging.getLogger("api")
 logger.setLevel(LOG_LEVEL)
@@ -19,10 +19,10 @@ console_handler = RichHandler(rich_tracebacks=True, tracebacks_show_locals=True)
 console_handler.setLevel(LOG_LEVEL)
 
 file_handler = TimedRotatingFileHandler(
-    filename=os.path.join(LOG_DIR, LOG_FILE),
+    filename=LOG_DIR / LOG_FILE,
     when="midnight",
     interval=1,
-    backupCount=0,
+    backupCount=7,
     encoding="utf-8",
 )
 file_handler.setLevel(LOG_LEVEL)

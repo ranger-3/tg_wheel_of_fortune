@@ -1,7 +1,8 @@
-from config import settings
-from logging_config import logger
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
 from telegram.ext import Application, CommandHandler, ContextTypes
+
+from config import settings
+from logging_config import logger
 
 bot_token = settings.bot_token.get_secret_value()
 

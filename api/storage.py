@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import Any
+
 from filelock import FileLock
 
 DATA_DIR: Path = Path("data")

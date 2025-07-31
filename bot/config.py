@@ -2,9 +2,10 @@
 
 import sys
 
-from logging_config import logger
 from pydantic import AnyHttpUrl, Field, SecretStr, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from logging_config import logger
 
 __all__ = ["settings"]
 

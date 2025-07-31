@@ -1,8 +1,9 @@
 import httpx
-from config import settings
 from fastapi import HTTPException
 from init_data_py import InitData
 from init_data_py.errors.errors import UnexpectedFormatError
+
+from config import settings
 from logging_config import logger
 
 bot_token = settings.bot_token.get_secret_value()
@@ -33,12 +34,12 @@ def validate_init_data(raw_init_data: str) -> InitData:
             logger.exception("Invalid Telegram init data")
             raise HTTPException(status_code=400, detail="Invalid Telegram init data")
         return init_data
-    except UnexpectedFormatError:
+    except UnexpectedFormatError as e:
         logger.exception("Invalid Telegram init data")
-        raise HTTPException(status_code=400, detail="Invalid Telegram init data")
-    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid Telegram init data") from e
+    except Exception as e:
         logger.exception("Internal server error")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        raise HTTPException(status_code=500, detail="Internal server error") from e
 
 
 async def check_user_subscribed(user_id: int) -> None:

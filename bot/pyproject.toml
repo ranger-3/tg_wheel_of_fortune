@@ -10,3 +10,26 @@ dependencies = [
     "python-telegram-bot>=22.3",
     "rich>=14.1.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle
+    "F",  # Pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "ASYNC",  # flake8-async
+    "T10",  # flake8-debugger
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "PIE",  # flake8-pie
+    "SIM",  # flake8-simplify
+    "PTH",  # flake8-use-pathlib
+    "FIX",  # flake8-fixme
+    "N",  # pep8-naming
+    "UP",  # pyupgrade
+]

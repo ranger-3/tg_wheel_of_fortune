@@ -82,8 +82,10 @@ async def register_spin_in_store(user_id: int, user_data: dict):
 
         elif data.get("status_code") == 409:
             logger.warning(
-                f"Promo code already exists: {promo_code}. Retrying ({attempt}/{MAX_RETRIES})..."
+                f"Promo code already exists: {promo_code}. "
+                f"Retrying ({attempt}/{MAX_RETRIES})..."
             )
+
             user_data["promo_code"] = generate_promo_code()
             continue
 

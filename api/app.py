@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -44,7 +44,7 @@ async def spin(req: SpinRequest):
 
     user_id = req.user_id
     user_data = get_user_data(user_id)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     await check_user_subscribed(user_id)
     last = user_data.get("last_spin")
