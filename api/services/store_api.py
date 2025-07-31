@@ -33,16 +33,12 @@ async def register_spin_in_store(user_id: int, user_data: dict) -> bool:
         "items_type": "all",
         "pcode_type": "once",
         "pcode_date": get_date_range(),
-        "items": "",
-        "categories": "",
         "visible": 1,
         "pcode_hashes": [
             {
                 "hash": promo_code,
                 "discount": int(prize.rstrip("%")),
                 "quantity": 1,
-                "items": "",
-                "categories": "",
             }
         ],
     }
@@ -70,7 +66,11 @@ async def register_spin_in_store(user_id: int, user_data: dict) -> bool:
 
     if response.status_code == 201:
         logger.info(data)
-        logger.info(f"Promo code created successfully: {promo_code}")
+        logger.info(
+            "Store confirmed promo registration: "
+            f"@{username} | ID {user_id} | {spin_time} | prize: {prize}"
+        )
+
         return True
     else:
         logger.warning(f"Store API returned error: {data}")
