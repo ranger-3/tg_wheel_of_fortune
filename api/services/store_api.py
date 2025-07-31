@@ -1,7 +1,8 @@
-# services/store_api.py
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import httpx
-from datetime import date, timedelta
+
 from config import settings
 from logging_config import logger
 
@@ -13,9 +14,22 @@ def get_date_range() -> str:
     return f"{start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}"
 
 
-async def create_promo_code(username: str, promo_code: str, discount: int) -> bool:
+async def register_spin_in_store(user_id: int, user_data: dict) -> bool:
+    username = user_data.get("username", "unknown")
+    promo_code = user_data["promo_code"]
+    prize = user_data["prize"]
+    spin_time = (
+        datetime.fromisoformat(user_data["last_spin"])
+        .astimezone(ZoneInfo("Europe/Chisinau"))
+        .strftime("%d.%m.%Y %H:%M")
+    )
+
     payload = {
-        "title": f"Wheel of Fortune (telegram bot) date: {date.today():%d.%m.%Y} user: {username}",
+        "title": (
+            f"Wheel of Fortune (telegram bot) | "
+            f"@{username} | ID {user_id} | "
+            f"{spin_time} | prize: {prize}"
+        ),
         "items_type": "all",
         "pcode_type": "once",
         "pcode_date": get_date_range(),
@@ -25,14 +39,13 @@ async def create_promo_code(username: str, promo_code: str, discount: int) -> bo
         "pcode_hashes": [
             {
                 "hash": promo_code,
-                "discount": discount,
+                "discount": int(prize.rstrip("%")),
                 "quantity": 1,
                 "items": "",
                 "categories": "",
             }
         ],
     }
-    logger.info(payload)
 
     headers = {
         "Content-Type": "application/json",

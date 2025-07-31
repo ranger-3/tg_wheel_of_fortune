@@ -10,7 +10,7 @@ from config import settings
 from constants import SECTORS, SPIN_INTERVAL
 from logging_config import logger
 from schemas import SpinRequest, SpinResponse
-from services.store_api import create_promo_code
+from services.store_api import register_spin_in_store
 from services.telegram import check_user_subscribed, send_promo_code, validate_init_data
 from storage import get_user_data, set_user_data
 from utils import format_timedelta, generate_promo_code
@@ -56,39 +56,39 @@ async def spin(req: SpinRequest):
             remaining = next_spin - now
             return {
                 "can_spin": False,
-                "sector": user_data.get("sector"),
+                "sector": user_data.get("prize"),
                 "promo_code": user_data.get("promo_code"),
                 "retry_after": format_timedelta(remaining),
             }
 
-    label = secrets.choice(SECTORS)
-    discount = int(label.rstrip("%"))
+    prize = secrets.choice(SECTORS)
     promo_code = generate_promo_code()
     username = init_data.user.username or "unknown"
 
     logger.info(
         f"@{username} (ID {user_id}) hit the wheel — "
-        f"sector: {label}, promo code: {promo_code}"
+        f"prize: {prize}, promo code: {promo_code}"
     )
 
-    success = await create_promo_code(username, promo_code, discount)
+    new_user_data = {
+        "last_spin": now.isoformat(),
+        "username": username,
+        "prize": prize,
+        "promo_code": promo_code,
+    }
+
+    success = await register_spin_in_store(user_id, new_user_data)
     if not success:
         raise HTTPException(
             status_code=502, detail="Failed to register promo code in store"
         )
 
-    new_user_data = {
-        "last_spin": now.isoformat(),
-        "username": username,
-        "sector": label,
-        "promo_code": promo_code,
-    }
     set_user_data(user_id, new_user_data)
 
-    await send_promo_code(int(user_id), label, promo_code)
+    await send_promo_code(int(user_id), prize, promo_code)
 
     return {
         "can_spin": True,
-        "sector": label,
+        "sector": prize,
         "promo_code": promo_code,
     }
