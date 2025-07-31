@@ -15,7 +15,7 @@ def get_date_range() -> str:
 
 
 async def register_spin_in_store(user_id: int, user_data: dict) -> bool:
-    username = user_data.get("username", "unknown")
+    username = user_data["username"]
     promo_code = user_data["promo_code"]
     prize = user_data["prize"]
     spin_time = (
