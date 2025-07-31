@@ -8,11 +8,12 @@ from logging_config import logger
 
 def get_date_range() -> str:
     today = date.today()
-    tomorrow = today + timedelta(days=1)
-    return f"{today.strftime('%d.%m.%Y')} - {tomorrow.strftime('%d.%m.%Y')}"
+    start = today - timedelta(days=1)
+    end = today + timedelta(days=7)
+    return f"{start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}"
 
 
-async def create_promo_code(username: str, promo_code: str, discount: int):
+async def create_promo_code(username: str, promo_code: str, discount: int) -> bool:
     payload = {
         "title": f"Wheel of Fortune (telegram bot) date: {date.today():%d.%m.%Y} user: {username}",
         "items_type": "all",
@@ -31,6 +32,7 @@ async def create_promo_code(username: str, promo_code: str, discount: int):
             }
         ],
     }
+    logger.info(payload)
 
     headers = {
         "Content-Type": "application/json",
@@ -54,6 +56,7 @@ async def create_promo_code(username: str, promo_code: str, discount: int):
             return False
 
     if response.status_code == 201:
+        logger.info(data)
         logger.info(f"Promo code created successfully: {promo_code}")
         return True
     else:
