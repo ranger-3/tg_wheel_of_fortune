@@ -16,14 +16,17 @@ This project combines a Telegram bot and a FastAPI WebApp. Users who are subscri
 1. **Create `.env` file**
 
 ```env
-BOT_TOKEN=your_bot_token
-CHANNEL_USERNAME=@your_channel_username
-WEBAPP_URL=https://your-webapp-url.example.com
+BOT_TOKEN=                 # Telegram bot token from @BotFather (keep secret)
+CHANNEL_USERNAME=          # Channel username (must start with @)
+WEBAPP_URL=                # HTTPS URL of your Telegram WebApp
+
+STORE_API_KEY=             # Store API access key (keep secret)
+STORE_API_URL=             # Endpoint to create promo codes in store
 ```
 
 Explanation:
 - `BOT_TOKEN`: Token from [@BotFather](https://telegram.me/BotFather)
-- `CHANNEL_USERNAME`: Your Telegram channel (including `@`)
+- `CHANNEL_USERNAME`: Username of your Telegram channel — make sure it starts with @, like @mychannel
 - `WEBAPP_URL`: Public HTTPS URL of the backend (required for Telegram WebApp)
 
 2. **Start with Docker Compose**
