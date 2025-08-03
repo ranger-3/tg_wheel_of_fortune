@@ -56,7 +56,7 @@ async def spin(req: SpinRequest):
             remaining = next_spin - now
             return {
                 "can_spin": False,
-                "sector": user_data.get("prize"),
+                "prize": user_data.get("prize"),
                 "promo_code": user_data.get("promo_code"),
                 "retry_after": format_timedelta(remaining),
             }
@@ -89,6 +89,6 @@ async def spin(req: SpinRequest):
 
     return {
         "can_spin": True,
-        "sector": prize,
+        "prize": prize,
         "promo_code": promo_code,
     }

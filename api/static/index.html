@@ -94,14 +94,14 @@
       if (res.ok && data.can_spin === false) {
         result.innerHTML = `
           🔄 Вы уже крутили колесо!<br>
-          🎯 Скидка: <b>${data.sector}</b><br>
+          🎯 Скидка: <b>${data.prize}</b><br>
           🎁 Промокод: <code>${data.promo_code}</code><br>
           ⏳ Следующая попытка через: <b>${data.retry_after}</b>
         `;
       } else if (res.ok) {
         result.innerHTML = `
           🎉 Поздравляем!<br>
-          🎯 Скидка: <b>${data.sector}</b><br>
+          🎯 Скидка: <b>${data.prize}</b><br>
           🎁 Промокод: <code>${data.promo_code}</code>
         `;
       }

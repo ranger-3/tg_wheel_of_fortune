@@ -41,7 +41,7 @@ Start the FastAPI backend using:
 
 
 ```bash
-uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn app:app --host 0.0.0.0 --port 8000 --workers 2
 ```
 
 This setup uses multiple processes.

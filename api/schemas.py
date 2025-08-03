@@ -8,6 +8,6 @@ class SpinRequest(BaseModel):
 
 class SpinResponse(BaseModel):
     can_spin: bool = True
-    sector: str
+    prize: str
     promo_code: str | None
     retry_after: str | None = None
