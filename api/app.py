@@ -35,7 +35,7 @@ async def index():
 
 @app.get("/sectors")
 async def get_sectors():
-    return SECTORS
+    return {"sectors": SECTORS}
 
 
 @app.post("/spin", response_model=SpinResponse)
