@@ -9,12 +9,19 @@ from logging_config import logger
 bot_token = settings.bot_token.get_secret_value()
 
 
-async def send_promo_code(user_id: int, label: str, promo_code: str):
-    text = (
-        f"🎉 Вы выиграли скидку *{label}*!\n\n"
-        f"🎁 Ваш промокод: `{promo_code}`\n\n"
-        f"Скопируйте и используйте его в магазине при оформлении заказа."
-    )
+async def send_promo_code(user_id: int, prize: str | None, promo_code: str | None):
+    if prize and promo_code:
+        text = (
+            f"🎉 Вы выиграли скидку *{prize}*!\n\n"
+            f"🎁 Ваш промокод: `{promo_code}`\n\n"
+            f"Скопируйте и используйте его в магазине при оформлении заказа\n\n"
+            "Колесо можно снова крутить через неделю"
+        )
+    else:
+        text = (
+            "Увы, сегодня без промокода\n\n"
+            "Но вы сможете снова крутить колесо через неделю"
+        )
 
     async with httpx.AsyncClient() as client:
         await client.post(

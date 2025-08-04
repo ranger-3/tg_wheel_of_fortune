@@ -62,8 +62,10 @@ async def spin(req: SpinRequest):
             }
 
     prize = secrets.choice(SECTORS)
-    promo_code = generate_promo_code()
-    username = init_data.user.username or "unknown"
+    promo_code = generate_promo_code() if prize else None
+
+    user = init_data.user
+    username = user.username if user and user.username else "unknown"
 
     logger.info(
         f"@{username} (ID {user_id}) hit the wheel — "
@@ -77,11 +79,12 @@ async def spin(req: SpinRequest):
         "promo_code": promo_code,
     }
 
-    success = await register_spin_in_store(user_id, new_user_data)
-    if not success:
-        raise HTTPException(
-            status_code=502, detail="Failed to register promo code in store"
-        )
+    if prize:
+        success = await register_spin_in_store(user_id, new_user_data)
+        if not success:
+            raise HTTPException(
+                status_code=502, detail="Failed to register promo code in store"
+            )
 
     set_user_data(user_id, new_user_data)
 

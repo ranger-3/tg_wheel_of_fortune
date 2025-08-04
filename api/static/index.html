@@ -92,18 +92,32 @@
       const result = document.getElementById("result");
 
       if (res.ok && data.can_spin === false) {
-        result.innerHTML = `
+        if (data.promo_code) {
+          result.innerHTML = `
           🔄 Вы уже крутили колесо!<br>
           🎯 Скидка: <b>${data.prize}</b><br>
           🎁 Промокод: <code>${data.promo_code}</code><br>
           ⏳ Следующая попытка через: <b>${data.retry_after}</b>
         `;
-      } else if (res.ok) {
-        result.innerHTML = `
-          🎉 Поздравляем!<br>
-          🎯 Скидка: <b>${data.prize}</b><br>
-          🎁 Промокод: <code>${data.promo_code}</code>
+        }
+        else {
+          result.innerHTML = `
+          🔄 Вы уже крутили колесо!<br>
+          ⏳ Следующая попытка через: <b>${data.retry_after}</b>
         `;
+        }
+      } else if (res.ok) {
+        if (data.promo_code) {
+          result.innerHTML = `
+            🎉 Поздравляем!<br>
+            🎯 Скидка: <b>${data.prize}</b><br>
+            🎁 Промокод: <code>${data.promo_code}</code>
+          `;
+        }
+        else {
+          result.innerHTML = `
+            Увы, сегодня без промокода.<br>Попробуйте снова через неделю`;
+        }
       }
       else if (res.status === 403) {
         result.innerHTML = `
