@@ -58,15 +58,22 @@ async def check_user_subscribed(user_id: int) -> None:
         data = response.json()
 
         if response.status_code != 200 or not data.get("ok"):
-            logger.warning(f"Error getChatMember: {data}")
-            raise HTTPException(status_code=400, detail="Не удалось проверить подписку")
+            logger.warning(
+                "Failed to verify subscription in WebApp: "
+                f"status={response.status_code}, response={data}"
+            )
+            raise HTTPException(
+                status_code=502,
+                detail="Failed to verify subscription. Please try again later.",
+            )
 
     user_status = data["result"]["status"]
+    user_status = "left"
     if user_status not in ("member", "administrator", "creator"):
         username = data["result"].get("user", {}).get("username", "unknown")
         logger.info(
             f"@{username} (ID {user_id}) is not subscribed — status: '{user_status}'"
         )
         raise HTTPException(
-            status_code=403, detail="Подпишитесь на канал, чтобы крутить колесо"
+            status_code=403, detail="User is not subscribed to the channel."
         )
