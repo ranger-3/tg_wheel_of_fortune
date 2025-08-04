@@ -68,7 +68,6 @@ async def check_user_subscribed(user_id: int) -> None:
             )
 
     user_status = data["result"]["status"]
-    user_status = "left"
     if user_status not in ("member", "administrator", "creator"):
         username = data["result"].get("user", {}).get("username", "unknown")
         logger.info(
